@@ -15,9 +15,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import pl.sky0x.app.DataType;
 import pl.sky0x.app.R;
 import pl.sky0x.app.data.Click;
 import pl.sky0x.app.data.DataSystem;
+import pl.sky0x.app.data.implementation.http.HTTPDataSystem;
 import pl.sky0x.app.data.implementation.mysql.DatabaseInfo;
 import pl.sky0x.app.data.implementation.mysql.MySQLDataSystem;
 import pl.sky0x.app.data.implementation.mysql.MySQLService;
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        connectToDatabase();
+        setUpDataSystem(DataType.MYSQL);
         setContentView(R.layout.activity_main);
         updateList();
 
@@ -59,7 +61,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void connectToDatabase() {
+    private void setUpDataSystem(DataType type) {
+        system = (type == DataType.HTTP ? new HTTPDataSystem() : connectToDatabase());
+    }
+
+    private DataSystem connectToDatabase() {
         MySQLService mySQLService = new MySQLService(new DatabaseInfo(
                 "localhost",
                 "3306",
@@ -73,6 +79,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        system = new MySQLDataSystem(mySQLService);
+        return new MySQLDataSystem(mySQLService);
     }
 }
