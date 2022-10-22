@@ -37,12 +37,16 @@ public class MainActivity extends AppCompatActivity {
 
         connectToDatabase();
         setContentView(R.layout.activity_main);
+        updateList();
 
         findViewById(R.id.button_click)
                 .setOnClickListener(view -> {
                     system.addClick(new Click(UUID.randomUUID(), System.currentTimeMillis(), "localhost"));
+                    updateList();
         });
+    }
 
+    private void updateList() {
         ListView listView = findViewById(R.id.list_item_2);
         service.execute(() -> {
             List<String> clicks = system.getClicks()
