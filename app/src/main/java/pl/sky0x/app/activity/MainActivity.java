@@ -26,6 +26,13 @@ import pl.sky0x.app.data.implementation.mysql.MySQLService;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String
+            HOST = "localhost",
+            PORT = "3306",
+            DATABASE = "clicks",
+            USERNAME = "root",
+            PASSWORD = "password";
+
     private DataSystem system;
 
     private final ExecutorService service = Executors
@@ -43,7 +50,9 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.button_click)
                 .setOnClickListener(view -> {
-                    system.addClick(new Click(UUID.randomUUID(), System.currentTimeMillis(), "localhost"));
+                    service.execute(() -> {
+                        system.addClick(new Click(UUID.randomUUID(), System.currentTimeMillis(), "localhost"));
+                    });
                     updateList();
         });
     }
@@ -67,11 +76,11 @@ public class MainActivity extends AppCompatActivity {
 
     private DataSystem connectToDatabase() {
         MySQLService mySQLService = new MySQLService(new DatabaseInfo(
-                "localhost",
-                "3306",
-                "test",
-                "roott",
-                "password"
+                HOST,
+                PORT,
+                DATABASE,
+                USERNAME,
+                PASSWORD
         ));
         try {
             mySQLService.connect();
