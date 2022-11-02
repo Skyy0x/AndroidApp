@@ -26,12 +26,16 @@ import pl.sky0x.app.data.implementation.mysql.MySQLService;
 
 public class MainActivity extends AppCompatActivity {
 
+    //Information to database
     private static final String
             HOST = "localhost",
             PORT = "3306",
             DATABASE = "clicks",
             USERNAME = "root",
             PASSWORD = "password";
+
+    //Api url
+    private static final String URL = "http://127.0.0.1:3000/clicks";
 
     private DataSystem system;
 
@@ -77,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
      * @param type of system (HTTP, MYSQL)
      */
     private void setUpDataSystem(DataType type) {
-        system = (type == DataType.HTTP ? new HTTPDataSystem() : connectToDatabase());
+        system = (type == DataType.HTTP ? new HTTPDataSystem(URL) : connectToDatabase());
     }
 
     /**

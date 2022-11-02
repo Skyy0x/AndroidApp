@@ -22,12 +22,16 @@ import pl.sky0x.app.data.DataSystem;
 
 public class HTTPDataSystem implements DataSystem {
 
-    private static final String URL = "http://127.0.0.1:3000/clicks";
+    private final String url;
+
+    public HTTPDataSystem(String url) {
+        this.url = url;
+    }
 
     @Override
     public Collection<Click> getClicks() {
         try {
-            URL url = new URL(URL);
+            URL url = new URL(this.url);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
             connection.setRequestMethod("GET");
@@ -62,7 +66,7 @@ public class HTTPDataSystem implements DataSystem {
     @Override
     public boolean addClick(Click click) {
         try {
-            URL url = new URL(URL);
+            URL url = new URL(this.url);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
             connection.setConnectTimeout(3000);
@@ -84,6 +88,8 @@ public class HTTPDataSystem implements DataSystem {
             return false;
         }
     }
+
+    //Get JsonObject from click
     private JsonObject getJsonFromClick(Click click) {
         JsonObject clickJson = new JsonObject();
         clickJson.addProperty("id", click.getUuid().toString());
@@ -93,6 +99,7 @@ public class HTTPDataSystem implements DataSystem {
         return clickJson;
     }
 
+    //Create new instance of click from JsonObject
     private Click getClickFromJson(JsonObject clickJson) {
         return new Click(
                 UUID.fromString(clickJson.get("id").getAsString()),
