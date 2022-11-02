@@ -19,16 +19,16 @@ public class MySQLService {
         this.databaseInfo = databaseInfo;
     }
 
+    //Connecting to database
     public Connection connect() throws SQLException {
         return connection = new HikariDataSource(getHikariConfig()).getConnection();
     }
 
+    //Creating table
     public void createTable() {
-        try(PreparedStatement statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `clicks` " +
-                "(`id` VARCHAR(36), `time` BIGINT(19), `ip` VARCHAR(36), PRIMARY KEY(id))")) {
-
-            System.out.println("Successfully created \"clicks\" table.");
-
+        try {
+            connection.prepareStatement("CREATE TABLE IF NOT EXISTS `clicks` " +
+                    "(`id` VARCHAR(36), `time` BIGINT(19), `ip` VARCHAR(36), PRIMARY KEY(id))");
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
