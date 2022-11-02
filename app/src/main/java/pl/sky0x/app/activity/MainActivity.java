@@ -46,34 +46,44 @@ public class MainActivity extends AppCompatActivity {
 
         setUpDataSystem(DataType.MYSQL);
         setContentView(R.layout.activity_main);
-        updateList();
+
+        service.execute(this::updateList);
 
         findViewById(R.id.button_click)
                 .setOnClickListener(view -> {
                     service.execute(() -> {
                         system.addClick(new Click(UUID.randomUUID(), System.currentTimeMillis(), "localhost"));
+                        updateList();
                     });
-                    updateList();
-        });
+                });
     }
 
+    /**
+     * Updating list in this activity
+     */
     private void updateList() {
         ListView listView = findViewById(R.id.list_item_2);
-        service.execute(() -> {
-            List<String> clicks = system.getClicks()
-                    .stream()
-                    .map(click -> click.getUuid().toString())
-                    .collect(Collectors.toList());
+        List<String> clicks = system.getClicks()
+                .stream()
+                .map(click -> click.getUuid().toString())
+                .collect(Collectors.toList());
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, clicks);
-            listView.setAdapter(adapter);
-        });
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, clicks);
+        listView.setAdapter(adapter);
     }
 
+    /**
+     * Setting data system
+     * @param type of system (HTTP, MYSQL)
+     */
     private void setUpDataSystem(DataType type) {
         system = (type == DataType.HTTP ? new HTTPDataSystem() : connectToDatabase());
     }
 
+    /**
+     * Connecting to database
+     * @return new mysql data system
+     */
     private DataSystem connectToDatabase() {
         MySQLService mySQLService = new MySQLService(new DatabaseInfo(
                 HOST,
